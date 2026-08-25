@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Netzwerk A1 · Lektion 1 — اختبار تفاعلي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --wine:#6E1F2B;
+    --wine-dark:#4A141C;
+    --wine-light:#8C3040;
+    --paper:#FAF6EE;
+    --card:#FFFFFF;
+    --ink:#2B2420;
+    --ink-soft:#6b5f55;
+    --gold:#C08A34;
+    --gold-light:#EBD9B4;
+    --sage:#3F7A5C;
+    --sage-bg:#E7F2EC;
+    --rust:#B23A2E;
+    --rust-bg:#FBEAE7;
+    --line:#E4D9C5;
+    --radius:14px;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 100% 0%, rgba(110,31,43,0.06), transparent 40%),
+      radial-gradient(circle at 0% 100%, rgba(192,138,52,0.08), transparent 40%);
+    color:var(--ink);
+    font-family:'Tajawal','Inter',sans-serif;
+    min-height:100vh;
+  }
+  [lang="de"], .de{
+    font-family:'Inter',sans-serif;
+    direction:ltr;
+    unicode-bidi:isolate;
+  }
+
+  /* ===== top flag stripe (signature) ===== */
+  .flagstripe{
+    height:5px;
+    background:linear-gradient(90deg,#111 0 33%, var(--rust) 33% 66%, var(--gold) 66% 100%);
+  }
+
+  header.topbar{
+    background:var(--wine);
+    background-image:linear-gradient(180deg, var(--wine), var(--wine-dark));
+    color:#fff;
+    padding:18px 22px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    position:sticky;
+    top:0;
+    z-index:20;
+    box-shadow:0 4px 14px rgba(0,0,0,0.18);
+  }
+  .brand{
+    display:flex;
+    flex-direction:column;
+    gap:2px;
+  }
+  .brand .title{
+    font-family:'Fraunces',serif;
+    font-size:22px;
+    font-weight:700;
+    letter-spacing:.2px;
+  }
+  .brand .sub{
+    font-size:12.5px;
+    color:#f0d9c9;
+    opacity:.85;
+  }
+  /* progress pill — echoes the "١٠ من ١٧٦" bubble from the textbook screen recording */
+  .progress-pill{
+    background:#fff;
+    color:var(--wine);
+    border-radius:999px;
+    padding:8px 18px;
+    font-weight:700;
+    font-size:14px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    box-shadow:0 3px 10px rgba(0,0,0,0.2);
+  }
+  .progress-pill .icon{
+    width:16px;height:16px;border:2px solid var(--wine);border-radius:3px;display:inline-block;
+  }
+
+  main{
+    max-width:860px;
+    margin:0 auto;
+    padding:26px 18px 90px;
+  }
+
+  /* ===== score summary strip ===== */
+  .scorebar{
+    display:flex;
+    gap:10px;
+    margin-bottom:22px;
+    flex-wrap:wrap;
+  }
+  .scorebar .chip{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:8px 14px;
+    font-size:13px;
+    font-weight:700;
+    display:flex;
+    gap:6px;
+    align-items:center;
+  }
+  .scorebar .chip.correct{color:var(--sage);}
+  .scorebar .chip.wrong{color:var(--rust);}
+  .scorebar .chip.left{color:var(--ink-soft);}
+
+  /* ===== category chips ===== */
+  .cats{
+    display:flex;
+    gap:8px;
+    overflow-x:auto;
+    padding-bottom:6px;
+    margin-bottom:22px;
+    scrollbar-width:thin;
+  }
+  .cats::-webkit-scrollbar{height:6px;}
+  .cats::-webkit-scrollbar-thumb{background:var(--gold-light);border-radius:4px;}
+  .cat-chip{
+    flex:0 0 auto;
+    background:var(--card);
+    border:1.5px solid var(--line);
+    color:var(--ink-soft);
+    padding:8px 16px;
+    border-radius:999px;
+    font-size:13px;
+    font-weight:700;
+    cursor:pointer;
+    white-space:nowrap;
+    transition:.15s;
+  }
+  .cat-chip.active{
+    background:var(--wine);
+    border-color:var(--wine);
+    color:#fff;
+  }
+
+  /* ===== question card ===== */
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:0 8px 24px rgba(74,20,28,0.08);
+    position:relative;
+    overflow:hidden;
+    border:1px solid var(--line);
+  }
+  /* corner ribbon — echoes the diagonal numbered tab on the textbook pages */
+  .corner-tab{
+    position:absolute;
+    top:0; left:0;
+    background:var(--wine);
+    color:#fff;
+    font-family:'Fraunces',serif;
+    font-weight:700;
+    font-size:15px;
+    padding:5px 16px 8px 12px;
+    border-bottom-right-radius:14px;
+    box-shadow:2px 2px 8px rgba(0,0,0,.15);
+  }
+  .card-inner{
+    padding:34px 26px 26px;
+  }
+  .cat-label{
+    color:var(--gold);
+    font-size:12.5px;
+    font-weight:700;
+    text-transform:uppercase;
+    letter-spacing:.4px;
+    margin-bottom:8px;
+  }
+  .q-text{
+    font-size:18px;
+    font-weight:700;
+    line-height:1.7;
+    margin-bottom:22px;
+  }
+  .q-text .de{font-weight:700;color:var(--wine-dark);}
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  .opt{
+    border:1.5px solid var(--line);
+    background:#fffdf9;
+    border-radius:10px;
+    padding:13px 16px;
+    cursor:pointer;
+    font-size:15px;
+    transition:.15s;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .opt:hover{border-color:var(--gold);background:#fff8ec;}
+  .opt.selected{border-color:var(--wine);background:var(--gold-light);}
+  .opt .bullet{
+    width:20px;height:20px;border-radius:50%;
+    border:2px solid var(--ink-soft);
+    flex:0 0 auto;
+  }
+  .opt.selected .bullet{
+    border-color:var(--wine);
+    background:radial-gradient(circle,var(--wine) 0 45%, transparent 50%);
+  }
+
+  .fillrow{
+    display:flex;
+    gap:10px;
+    margin-bottom:18px;
+  }
+  input.fillinput{
+    flex:1;
+    padding:13px 16px;
+    border-radius:10px;
+    border:1.5px solid var(--line);
+    font-size:16px;
+    font-family:'Inter',sans-serif;
+    direction:ltr;
+    text-align:right;
+  }
+  input.fillinput:focus{outline:none;border-color:var(--wine);}
+
+  .actions{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    flex-wrap:wrap;
+  }
+  button{
+    font-family:inherit;
+    font-weight:700;
+    font-size:14.5px;
+    border:none;
+    border-radius:10px;
+    padding:12px 22px;
+    cursor:pointer;
+    transition:.15s;
+  }
+  .btn-check{background:var(--wine);color:#fff;}
+  .btn-check:hover{background:var(--wine-dark);}
+  .btn-check:disabled{background:#cbb; cursor:not-allowed; opacity:.5;}
+  .btn-next{background:var(--gold);color:#fff;}
+  .btn-next:hover{background:#a97525;}
+  .btn-ghost{background:transparent;color:var(--ink-soft);border:1.5px solid var(--line);}
+  .btn-ghost:hover{border-color:var(--ink-soft);}
+
+  /* ===== feedback / error banner ===== */
+  .feedback{
+    margin-top:18px;
+    padding:14px 16px;
+    border-radius:10px;
+    font-size:14.5px;
+    font-weight:700;
+    display:none;
+    align-items:flex-start;
+    gap:10px;
+    line-height:1.6;
+  }
+  .feedback.show{display:flex;}
+  .feedback.error{
+    background:var(--rust-bg);
+    color:var(--rust);
+    border:1.5px solid #eac3bd;
+    animation:shake .4s;
+  }
+  .feedback.success{
+    background:var(--sage-bg);
+    color:var(--sage);
+    border:1.5px solid #bfe0cd;
+  }
+  .feedback .fico{font-size:18px;line-height:1;}
+  .feedback small{
+    display:block;
+    font-weight:500;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+  @keyframes shake{
+    0%,100%{transform:translateX(0);}
+    20%{transform:translateX(-6px);}
+    40%{transform:translateX(6px);}
+    60%{transform:translateX(-4px);}
+    80%{transform:translateX(4px);}
+  }
+
+  /* ===== end screen ===== */
+  .endcard{
+    text-align:center;
+    padding:50px 26px;
+  }
+  .endcard .big{
+    font-family:'Fraunces',serif;
+    font-size:52px;
+    font-weight:900;
+    color:var(--wine);
+  }
+  .endcard p{color:var(--ink-soft); font-size:15px;}
+
+  footer{
+    text-align:center;
+    padding:24px;
+    color:var(--ink-soft);
+    font-size:12.5px;
+  }
+
+  @media (max-width:560px){
+    .brand .title{font-size:18px;}
+    .q-text{font-size:16.5px;}
+    .card-inner{padding:30px 18px 22px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="flagstripe"></div>
+<header class="topbar">
+  <div class="brand">
+    <div class="title">Netzwerk A1 · Lektion 1</div>
+    <div class="sub">Guten Tag! — اختبار تفاعلي شامل</div>
+  </div>
+  <div class="progress-pill">
+    <span class="icon"></span>
+    <span id="pillText">١ من ١١٠</span>
+  </div>
+</header>
+
+<main>
+  <div class="scorebar">
+    <div class="chip correct">✅ صح: <span id="scCorrect">0</span></div>
+    <div class="chip wrong">❌ غلط: <span id="scWrong">0</span></div>
+    <div class="chip left">⏳ متبقي: <span id="scLeft">0</span></div>
+  </div>
+
+  <div class="cats" id="catBar"></div>
+
+  <div id="quizArea"></div>
+</main>
+
+<footer>مصمم خصيصًا لمراجعة الدرس الأول من كتاب Netzwerk A1 — بالتوفيق! 🇩🇪</footer>
+
+<script>
+/* ============ بنك الأسئلة ============ */
+const QUESTIONS = [
+  // ---- الأفعال (Verben) ----
+  {cat:"الأفعال", type:"fill", q:'كمّل: "ich ___ Khaled" (sein)', accept:["bin"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "du ___ Peter" (sein)', accept:["bist"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "er ___ aus Kuwait" (sein)', accept:["ist"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "Sie ___ Frau Weber?" (sein, رسمي)', accept:["sind"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "ich ___ Khaled" (heißen)', accept:["heiße","heisse"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "wie ___ du?" (heißen)', accept:["heißt","heisst"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "er ___ Peter" (heißen)', accept:["heißt","heisst"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "wie ___ Sie?" (heißen, رسمي)', accept:["heißen","heissen"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "ich ___ aus Kuwait" (kommen)', accept:["komme"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "woher ___ du?" (kommen)', accept:["kommst"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "er ___ aus Frankfurt" (kommen)', accept:["kommt"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "woher ___ Sie?" (kommen, رسمي)', accept:["kommen"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "ich ___ in Hawally" (wohnen)', accept:["wohne"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "wo ___ du?" (wohnen)', accept:["wohnst"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "er ___ in Berlin" (wohnen)', accept:["wohnt"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "wo ___ Sie?" (wohnen, رسمي)', accept:["wohnen"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "ich ___ Deutsch und Arabisch" (sprechen)', accept:["spreche"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "Sie (هي) ___ Portugiesisch" (sprechen)', accept:["spricht"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "wir ___ Studenten" (sein)', accept:["sind"]},
+  {cat:"الأفعال", type:"fill", q:'كمّل: "ihr ___ aus München?" (kommen)', accept:["kommt"]},
+
+  // ---- التحية والوداع ----
+  {cat:"التحية", type:"mcq", q:'إيه التحية المناسبة الساعة 8 الصبح؟', options:["Guten Morgen","Guten Abend","Gute Nacht","Tschüs"], answer:0},
+  {cat:"التحية", type:"mcq", q:'إيه التحية المناسبة الساعة 8 بالليل؟', options:["Guten Morgen","Guten Tag","Guten Abend","Gute Nacht"], answer:2},
+  {cat:"التحية", type:"mcq", q:'إيه العبارة المناسبة قبل النوم؟', options:["Guten Tag","Gute Nacht","Guten Abend","Hallo"], answer:1},
+  {cat:"التحية", type:"mcq", q:'أي كلمة دي "وداع" مش "تحية"؟', options:["Hallo","Guten Tag","Tschüs","Guten Morgen"], answer:2},
+  {cat:"التحية", type:"mcq", q:'"Auf Wiedersehen" بتتقال في مواقف:', options:["رسمية","غير رسمية بس","مع الأصحاب بس","مع الأطفال بس"], answer:0},
+  {cat:"التحية", type:"mcq", q:'"Bis bald!" معناها الأقرب:', options:["إلى اللقاء قريبًا","صباح الخير","كيف حالك","عفوًا"], answer:0},
+  {cat:"التحية", type:"mcq", q:'الرد المناسب على "Wie geht\'s?"', options:["Ich heiße Peter","Danke, gut. Und dir?","Ich wohne in Berlin","Tschüs"], answer:1},
+  {cat:"التحية", type:"mcq", q:'الرد المناسب على "Wer bist du?"', options:["Ich komme aus Kuwait","Ich bin Khaled","Danke, gut","Ich wohne in Hawally"], answer:1},
+  {cat:"التحية", type:"mcq", q:'"Ciao" في الحوار استُخدمت كـ:', options:["تحية فقط","وداع","سؤال","اسم"], answer:1},
+  {cat:"التحية", type:"mcq", q:'الرد الرسمي المناسب على "Wie geht es Ihnen?"', options:["Auch gut, danke","Ganz gut","Danke, gut. Und Ihnen?","Ich heiße Nina"], answer:2},
+
+  // ---- du oder Sie ----
+  {cat:"du/Sie", type:"mcq", q:'مع صاحبك بتستخدم:', options:["du","Sie","إحنا","هو"], answer:0},
+  {cat:"du/Sie", type:"mcq", q:'مع مديرك في الشغل أول مرة بتستخدم:', options:["du","Sie"], answer:1},
+  {cat:"du/Sie", type:"mcq", q:'"Wie heißt du?" ← الإجابة المتوقعة:', options:["Vorname بس","Vorname + Nachname"], answer:0},
+  {cat:"du/Sie", type:"mcq", q:'"Wie heißen Sie?" ← الإجابة المتوقعة غالبًا:', options:["Vorname بس","Vorname + Nachname"], answer:1},
+  {cat:"du/Sie", type:"mcq", q:'"Wie ist Ihr Name?" ← دي:', options:["رسمية (Sie)","غير رسمية (du)"], answer:0},
+  {cat:"du/Sie", type:"mcq", q:'"Wer bist du?" ← دي:', options:["رسمية","غير رسمية"], answer:1},
+  {cat:"du/Sie", type:"mcq", q:'الصيغة الرسمية لسؤال "Wie geht\'s dir?" هي:', options:["Wie geht\'s?","Wie geht es Ihnen?","Wie heißt du?"], answer:1},
+  {cat:"du/Sie", type:"mcq", q:'حرف "Sie" الرسمي بيتكتب دايمًا:', options:["بحرف كبير","بحرف صغير"], answer:0},
+  {cat:"du/Sie", type:"mcq", q:'مع طفل صغير بتستخدم:', options:["du","Sie"], answer:0},
+  {cat:"du/Sie", type:"mcq", q:'في مقابلة شغل رسمية بتستخدم:', options:["du","Sie"], answer:1},
+
+  // ---- الأرقام ----
+  {cat:"الأرقام", type:"fill", q:'اكتب بالألماني الرقم 0', accept:["null"]},
+  {cat:"الأرقام", type:"fill", q:'اكتب بالألماني الرقم 1', accept:["eins"]},
+  {cat:"الأرقام", type:"fill", q:'اكتب بالألماني الرقم 5', accept:["fünf","funf"]},
+  {cat:"الأرقام", type:"fill", q:'اكتب بالألماني الرقم 7', accept:["sieben"]},
+  {cat:"الأرقام", type:"fill", q:'اكتب بالألماني الرقم 10', accept:["zehn"]},
+  {cat:"الأرقام", type:"fill", q:'اكتب بالألماني الرقم 11', accept:["elf"]},
+  {cat:"الأرقام", type:"fill", q:'اكتب بالألماني الرقم 14', accept:["vierzehn"]},
+  {cat:"الأرقام", type:"fill", q:'اكتب بالألماني الرقم 16', accept:["sechzehn"]},
+  {cat:"الأرقام", type:"fill", q:'اكتب بالألماني الرقم 17', accept:["siebzehn"]},
+  {cat:"الأرقام", type:"fill", q:'اكتب بالألماني الرقم 20', accept:["zwanzig"]},
+
+  // ---- الحروف والإيميل ----
+  {cat:"الحروف", type:"mcq", q:'علامة "@" بتتنطق بالألماني:', options:["Punkt","Unterstrich","ät","minus"], answer:2},
+  {cat:"الحروف", type:"mcq", q:'علامة "." بتتنطق بالألماني:', options:["Punkt","ät","Strich","Komma"], answer:0},
+  {cat:"الحروف", type:"mcq", q:'علامة "-" بتتنطق بالألماني:', options:["Punkt","minus","ät","Unterstrich"], answer:1},
+  {cat:"الحروف", type:"mcq", q:'علامة "_" بتتنطق بالألماني:', options:["minus","Unterstrich","Punkt","ät"], answer:1},
+  {cat:"الحروف", type:"mcq", q:'حرف "ß" اسمه:', options:["estset","tset","es","zet"], answer:0},
+  {cat:"الحروف", type:"mcq", q:'لو مش فاهم حد، تقوله:', options:["Guten Tag","Wie bitte?","Auf Wiedersehen","Danke"], answer:1},
+  {cat:"الحروف", type:"mcq", q:'"Bitte ein bisschen langsamer" معناها:', options:["من فضلك بشوية أبطأ","صباح الخير","إلى اللقاء","شكرًا جزيلًا"], answer:0},
+  {cat:"الحروف", type:"mcq", q:'حرف "j" بيتنطق بالألماني:', options:["dsche","jot","ei","ju"], answer:1},
+
+  // ---- الدول واللغات ----
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة الرسمية في Deutschland؟', accept:["deutsch"]},
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة في Österreich؟', accept:["deutsch"]},
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة في Frankreich؟', accept:["französisch","franzosisch","franzoesisch"]},
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة في Spanien؟', accept:["spanisch"]},
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة في Italien؟', accept:["italienisch"]},
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة في Japan؟', accept:["japanisch"]},
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة في Russland؟', accept:["russisch"]},
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة في Polen؟', accept:["polnisch"]},
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة في die Türkei؟', accept:["türkisch","turkisch","tuerkisch"]},
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة في Algerien (لغة رئيسية)؟', accept:["arabisch"]},
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة في Brasilien؟', accept:["portugiesisch"]},
+  {cat:"الدول واللغات", type:"fill", q:'إيه اللغة في die USA؟', accept:["englisch"]},
+  {cat:"الدول واللغات", type:"mcq", q:'"aus ___ Schweiz" — كمّل بالأداة الصح:', options:["(من غير أداة)","der","die","das"], answer:1},
+  {cat:"الدول واللغات", type:"mcq", q:'"aus ___ USA" — كمّل بالأداة الصح:', options:["(من غير أداة)","der","den","die"], answer:2},
+  {cat:"الدول واللغات", type:"mcq", q:'"aus Spanien" — محتاجة أداة تعريف؟', options:["أيوه","لأ"], answer:1},
+
+  // ---- المفردات الدولية (Deutsch international) ----
+  {cat:"المفردات", type:"mcq", q:'إيه معنى "das Butterbrot"؟', options:["شطيرة زبدة وخبز","زجاجة","حقيبة سفر","معكرونة"], answer:0},
+  {cat:"المفردات", type:"mcq", q:'إيه معنى "der Kranke"؟', options:["الطبيب","المريض","الممرضة","المستشفى"], answer:1},
+  {cat:"المفردات", type:"mcq", q:'إيه معنى "die Autobahn"؟', options:["القطار","الطريق السريع","الطائرة","الحافلة"], answer:1},
+  {cat:"المفردات", type:"mcq", q:'إيه معنى "das Handtuch"؟', options:["المنشفة","الحقيبة","الزجاجة","الفوطة الورقية"], answer:0},
+  {cat:"المفردات", type:"mcq", q:'إيه معنى "der Koffer"؟', options:["الحقيبة/الشنطة","الزجاجة","المنشفة","السجق"], answer:0},
+  {cat:"المفردات", type:"mcq", q:'إيه معنى "die Flasche"؟', options:["الزجاجة","الحقيبة","المعكرونة","الروضة"], answer:0},
+  {cat:"المفردات", type:"mcq", q:'إيه معنى "die Nudeln"؟', options:["المعكرونة","الخبز","السجق","الجبنة"], answer:0},
+  {cat:"المفردات", type:"mcq", q:'إيه معنى "der Kindergarten"؟', options:["المدرسة","الحضانة/روضة الأطفال","الجامعة","الملعب"], answer:1},
+  {cat:"المفردات", type:"mcq", q:'إيه معنى "das Würstchen"؟', options:["السجق الصغير","الجبنة","الخبز","المعكرونة"], answer:0},
+
+  // ---- ترتيب الجملة ----
+  {cat:"ترتيب الجملة", type:"mcq", q:'إيه الترتيب الصح لسؤال (W-Frage)؟', options:["W-Wort + Verb + الباقي","Verb + W-Wort + الباقي","الباقي + W-Wort + Verb"], answer:0},
+  {cat:"ترتيب الجملة", type:"mcq", q:'في جملة الإخبار (Aussagesatz)، الفعل بييجي في المكان رقم:', options:["الأول","الثاني","الأخير"], answer:1},
+  {cat:"ترتيب الجملة", type:"mcq", q:'اختار الترتيب الصح:', options:["Wohne ich in Berlin","Ich wohne in Berlin","In Berlin ich wohne"], answer:1},
+  {cat:"ترتيب الجملة", type:"mcq", q:'اختار السؤال الصح:', options:["Du wie heißt?","Wie heißt du?","Heißt wie du?"], answer:1},
+  {cat:"ترتيب الجملة", type:"mcq", q:'اختار السؤال الصح:', options:["Woher kommst du?","Kommst woher du?","Du kommst woher?"], answer:0},
+  {cat:"ترتيب الجملة", type:"mcq", q:'اختار الجملة الصح:', options:["Sie kommt aus Japan","Kommt sie aus Japan aus","Aus Japan sie kommt"], answer:0},
+  {cat:"ترتيب الجملة", type:"mcq", q:'"Das ist Frau Lang. ___ kommt aus Deutschland." اختار الضمير الصح:', options:["Er","Sie","Du"], answer:1},
+  {cat:"ترتيب الجملة", type:"mcq", q:'"Das ist Jan. ___ kommt aus Frankfurt." اختار الضمير الصح:', options:["Er","Sie","Ich"], answer:0},
+
+  // ---- ترجمة عربي-ألماني ----
+  {cat:"ترجمة", type:"fill", q:'ترجم: "أنا اسمي..." (ابدأ بـ Ich)', accept:["ich heiße","ich heisse"]},
+  {cat:"ترجمة", type:"fill", q:'ترجم: "من أين أنتَ؟" (du)', accept:["woher kommst du","woher kommst du?"]},
+  {cat:"ترجمة", type:"fill", q:'ترجم: "أين تسكن؟" (du)', accept:["wo wohnst du","wo wohnst du?"]},
+  {cat:"ترجمة", type:"fill", q:'ترجم: "كيف حالك؟" (غير رسمي، مختصرة)', accept:["wie geht\'s","wie gehts","wie geht es dir"]},
+  {cat:"ترجمة", type:"fill", q:'ترجم: "شكرًا، بخير"', accept:["danke, gut","danke gut"]},
+  {cat:"ترجمة", type:"fill", q:'ترجم: "إلى اللقاء"', accept:["auf wiedersehen"]},
+  {cat:"ترجمة", type:"fill", q:'ترجم: "عفوًا" (قبل سؤال)', accept:["entschuldigung"]},
+  {cat:"ترجمة", type:"fill", q:'ترجم: "أنا أتكلم ألماني" (ابدأ بـ Ich)', accept:["ich spreche deutsch"]},
+  {cat:"ترجمة", type:"fill", q:'ترجم: "أنا من الكويت" (ابدأ بـ Ich)', accept:["ich komme aus kuwait"]},
+  {cat:"ترجمة", type:"fill", q:'ترجم: "أنا أسكن في..." (ابدأ بـ Ich)', accept:["ich wohne in"]},
+
+  // ---- فيديو Die Netzwerk-WG ----
+  {cat:"فيديو WG", type:"mcq", q:'مين اللي مش ساكن في الـ Netzwerk-WG؟', options:["Luca","Bea","Frau Müller","Max"], answer:2},
+  {cat:"فيديو WG", type:"mcq", q:'مين اللي ساكنة جديدة في الـ WG؟', options:["Bea","Anna","Max","Luca"], answer:1},
+  {cat:"فيديو WG", type:"mcq", q:'Bea جايه منين؟', options:["Berlin","München","Hannover","Frankfurt"], answer:2},
+  {cat:"فيديو WG", type:"mcq", q:'Luca جاي منين؟', options:["Berlin","Hannover","München","Zürich"], answer:0},
+  {cat:"فيديو WG", type:"mcq", q:'Max, Bea و Luca بيسكنوا فين؟', options:["Berlin","München","Frankfurt","Hamburg"], answer:1},
+  {cat:"فيديو WG", type:"mcq", q:'Anna إيه اللي بتعمله (من النص)؟', options:["بتشتغل مهندسة","هي طالبة في الجامعة (an der Uni)","بترجع بلدها","بتدرس ألماني بس"], answer:1},
+  {cat:"فيديو WG", type:"mcq", q:'إيه اسم عائلة Bea (Nachname) زي ما ظهر في الفورم؟', options:["Bea M.","Bea K.","Bea W.","Bea L."], answer:1},
+  {cat:"فيديو WG", type:"mcq", q:'"Nein, da sind Sie hier falsch" معناها:', options:["أيوه، المكان صح","لأ، انت غلطان المكان","تحية عادية","سؤال عن الاسم"], answer:1},
+  {cat:"فيديو WG", type:"mcq", q:'مين قال "Ah, du bist neu hier. Ich bin Luca"؟', options:["Bea","Luca","Anna","Max"], answer:1},
+  {cat:"فيديو WG", type:"mcq", q:'أول جملة في الحوار كانت:', options:["Woher kommst du denn?","Bea, das ist Anna.","Und wie ist deine Nummer?","Nein, da sind Sie hier falsch."], answer:1},
+];
+
+/* ============ محرك الاختبار ============ */
+let state = JSON.parse(JSON.stringify(QUESTIONS)).map((q,i)=>({...q, idx:i, done:false, correct:false, attempts:0}));
+let categories = ["الكل", ...new Set(QUESTIONS.map(q=>q.cat))];
+let activeCat = "الكل";
+let currentIdx = 0; // index within filteredList
+let selectedOption = null;
+
+function filteredList(){
+  return activeCat==="الكل" ? state : state.filter(q=>q.cat===activeCat);
+}
+
+function normalize(str){
+  return str.toString().trim().toLowerCase()
+    .replace(/ß/g,"ss")
+    .replace(/[?!.,]/g,"")
+    .replace(/\s+/g," ");
+}
+
+function renderCats(){
+  const bar = document.getElementById('catBar');
+  bar.innerHTML = "";
+  categories.forEach(c=>{
+    const chip = document.createElement('div');
+    chip.className = 'cat-chip' + (c===activeCat ? ' active':'');
+    chip.textContent = c;
+    chip.onclick = ()=>{ activeCat=c; currentIdx=0; renderCats(); renderQuestion(); updateScorebar(); };
+    bar.appendChild(chip);
+  });
+}
+
+function updateScorebar(){
+  const list = filteredList();
+  const correct = list.filter(q=>q.correct).length;
+  const wrongDone = list.filter(q=>q.done && !q.correct).length;
+  const left = list.filter(q=>!q.correct).length;
+  document.getElementById('scCorrect').textContent = correct;
+  document.getElementById('scWrong').textContent = wrongDone;
+  document.getElementById('scLeft').textContent = left;
+  const list2 = filteredList();
+  const posDone = Math.min(currentIdx+1, list2.length);
+  document.getElementById('pillText').textContent = `${posDone} من ${list2.length}`;
+}
+
+function renderQuestion(){
+  const area = document.getElementById('quizArea');
+  const list = filteredList();
+
+  if(list.length===0){
+    area.innerHTML = `<div class="card"><div class="card-inner"><p>مفيش أسئلة في القسم ده.</p></div></div>`;
+    return;
+  }
+
+  // لو خلص كل الأسئلة الصح في القسم ده
+  const remaining = list.filter(q=>!q.correct);
+  if(remaining.length===0){
+    const totalAttemptsWrong = list.reduce((s,q)=>s+ (q.attempts>1?1:0),0);
+    area.innerHTML = `
+      <div class="card"><div class="card-inner endcard">
+        <div class="big">🎉</div>
+        <h2>خلصت كل أسئلة "${activeCat}"!</h2>
+        <p>عدد الأسئلة: ${list.length} — كلها صح دلوقتي.</p>
+        <button class="btn-ghost" onclick="resetCategory()">إعادة المحاولة في هذا القسم</button>
+      </div></div>`;
+    return;
+  }
+
+  if(currentIdx >= remaining.length) currentIdx = 0;
+  const q = remaining[currentIdx];
+  selectedOption = null;
+
+  let bodyHTML = "";
+  if(q.type==="mcq"){
+    bodyHTML = `<div class="options" id="optsWrap">` +
+      q.options.map((opt,i)=>`
+        <div class="opt" data-i="${i}" onclick="selectOpt(${i})">
+          <span class="bullet"></span><span class="de" lang="de">${opt}</span>
+        </div>`).join("") +
+      `</div>`;
+  } else {
+    bodyHTML = `<div class="fillrow">
+      <input type="text" class="fillinput de" lang="de" id="fillInput" placeholder="اكتب إجابتك هنا بالألماني...">
+    </div>`;
+  }
+
+  area.innerHTML = `
+    <div class="card">
+      <div class="corner-tab">${q.idx+1}</div>
+      <div class="card-inner">
+        <div class="cat-label">${q.cat}</div>
+        <div class="q-text">${q.q}</div>
+        ${bodyHTML}
+        <div class="actions">
+          <button class="btn-check" id="checkBtn" onclick="checkAnswer()">✓ تحقق من الإجابة</button>
+          <button class="btn-ghost" onclick="skipQuestion()">تخطي ⏭</button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+    </div>
+  `;
+
+  if(q.type==="fill"){
+    const inp = document.getElementById('fillInput');
+    inp.addEventListener('keydown', e=>{ if(e.key==="Enter") checkAnswer(); });
+    setTimeout(()=>inp.focus(), 50);
+  }
+  updateScorebar();
+}
+
+function selectOpt(i){
+  selectedOption = i;
+  document.querySelectorAll('.opt').forEach(el=>el.classList.remove('selected'));
+  document.querySelector(`.opt[data-i="${i}"]`).classList.add('selected');
+}
+
+function checkAnswer(){
+  const list = filteredList();
+  const remaining = list.filter(q=>!q.correct);
+  if(currentIdx>=remaining.length) return;
+  const q = remaining[currentIdx];
+  q.attempts++;
+
+  let isCorrect = false;
+  let userAnswerShown = "";
+
+  if(q.type==="mcq"){
+    if(selectedOption===null){
+      showFeedback(false, "اختار إجابة الأول قبل ما تتحقق!", "");
+      return;
+    }
+    isCorrect = selectedOption === q.answer;
+    userAnswerShown = q.options[selectedOption];
+  } else {
+    const val = document.getElementById('fillInput').value;
+    if(!val.trim()){
+      showFeedback(false, "اكتب إجابة الأول!", "");
+      return;
+    }
+    isCorrect = q.accept.some(a=> normalize(a)===normalize(val));
+    userAnswerShown = val;
+  }
+
+  if(isCorrect){
+    q.correct = true;
+    q.done = true;
+    showFeedback(true, "إجابة صح! أحسنت 👏", "");
+    updateScorebar();
+    setTimeout(()=>{ renderQuestion(); }, 900);
+  } else {
+    q.done = true;
+    let hint = "";
+    if(q.attempts>=2){
+      const correctText = q.type==="mcq" ? q.options[q.answer] : q.accept[0];
+      hint = `الإجابة الصحيحة: <span class="de" lang="de">${correctText}</span>`;
+    } else {
+      hint = "حاول تاني — راجع تصريف الفعل أو القاعدة.";
+    }
+    showFeedback(false, "❌ Error: إجابة غلط", hint);
+    updateScorebar();
+  }
+}
+
+function showFeedback(ok, title, sub){
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (ok?'success':'error');
+  fb.innerHTML = `<span class="fico">${ok?'✅':'⚠️'}</span><div>${title}${sub?`<small>${sub}</small>`:''}</div>`;
+}
+
+function skipQuestion(){
+  const list = filteredList();
+  const remaining = list.filter(q=>!q.correct);
+  if(remaining.length<=1) return;
+  currentIdx = (currentIdx+1) % remaining.length;
+  renderQuestion();
+}
+
+function resetCategory(){
+  filteredList().forEach(q=>{ q.correct=false; q.done=false; q.attempts=0; });
+  currentIdx = 0;
+  renderQuestion();
+}
+
+renderCats();
+renderQuestion();
+</script>
+</body>
+</html>
