@@ -244,40 +244,40 @@ ALPHABET.forEach(([letter,pron])=>{
 });
 
 /* ---------- 4) الدول واللغات (اتجاهين) ---------- */
-const COUNTRIES_SIMPLE = [
-  ["Deutschland","Deutsch"], ["Österreich","Deutsch"], ["Frankreich","Französisch"], ["Spanien","Spanisch"],
-  ["Italien","Italienisch"], ["Japan","Japanisch"], ["Russland","Russisch"], ["Polen","Polnisch"],
-  ["Ägypten","Arabisch"], ["Kuwait","Arabisch"], ["England","Englisch"], ["Mexiko","Spanisch"],
-  ["Portugal","Portugiesisch"], ["Griechenland","Griechisch"], ["China","Chinesisch"], ["Marokko","Arabisch"],
-  ["Schweden","Schwedisch"], ["Brasilien","Portugiesisch"], ["Algerien","Arabisch"]
-];
-COUNTRIES_SIMPLE.forEach(([land,spr])=>{
-  QUESTIONS.push({cat:"الدول واللغات", type:"fill", q:`إيه اللغة الرسمية في ${land}؟`,
-    accept:[spr.toLowerCase(), spr.toLowerCase().replace(/ö/g,"o").replace(/ü/g,"u").replace(/ä/g,"a")]});
-});
-const ART_COUNTRIES = [
-  ["die Schweiz",["deutsch","französisch","italienisch"]],
-  ["die Türkei",["türkisch"]],
-  ["die USA",["englisch"]],
-  ["die Niederlande",["niederländisch","niederlandisch"]]
-];
-ART_COUNTRIES.forEach(([land,accepts])=>{
-  QUESTIONS.push({cat:"الدول واللغات", type:"fill", q:`إيه اللغة الرسمية في ${land}؟ (اكتب لغة واحدة تكفي)`, accept:accepts});
-});
-const REVERSE_LANG = [
-  ["Japanisch","Japan"],["Russisch","Russland"],["Polnisch","Polen"],["Türkisch","die Türkei"],
-  ["Chinesisch","China"],["Griechisch","Griechenland"],["Schwedisch","Schweden"],["Niederländisch","die Niederlande"]
-];
-REVERSE_LANG.forEach(([spr,land])=>{
-  QUESTIONS.push({cat:"الدول واللغات", type:"fill", q:`أي دولة اللغة الرسمية فيها هي ${spr}؟`, accept:[land.toLowerCase(), land.replace("die ","").toLowerCase()]});
-});
-QUESTIONS.push(
-  {cat:"الدول واللغات", type:"mcq", q:'"aus ___ Schweiz" — كمّل بالأداة الصح:', options:["(من غير أداة)","der","die","das"], answer:1},
-  {cat:"الدول واللغات", type:"mcq", q:'"aus ___ USA" — كمّل بالأداة الصح:', options:["(من غير أداة)","der","den","die"], answer:2},
-  {cat:"الدول واللغات", type:"mcq", q:'"aus ___ Türkei" — كمّل بالأداة الصح:', options:["(من غير أداة)","der","die","das"], answer:1},
-  {cat:"الدول واللغات", type:"mcq", q:'"aus Spanien" — محتاجة أداة تعريف؟', options:["أيوه","لأ"], answer:1},
-  {cat:"الدول واللغات", type:"mcq", q:'"aus Kuwait" — محتاجة أداة تعريف؟', options:["أيوه","لأ"], answer:1}
-);
+// const COUNTRIES_SIMPLE = [
+//   ["Deutschland","Deutsch"], ["Österreich","Deutsch"], ["Frankreich","Französisch"], ["Spanien","Spanisch"],
+//   ["Italien","Italienisch"], ["Japan","Japanisch"], ["Russland","Russisch"], ["Polen","Polnisch"],
+//   ["Ägypten","Arabisch"], ["Kuwait","Arabisch"], ["England","Englisch"], ["Mexiko","Spanisch"],
+//   ["Portugal","Portugiesisch"], ["Griechenland","Griechisch"], ["China","Chinesisch"], ["Marokko","Arabisch"],
+//   ["Schweden","Schwedisch"], ["Brasilien","Portugiesisch"], ["Algerien","Arabisch"]
+// ];
+// COUNTRIES_SIMPLE.forEach(([land,spr])=>{
+//   QUESTIONS.push({cat:"الدول واللغات", type:"fill", q:`إيه اللغة الرسمية في ${land}؟`,
+//     accept:[spr.toLowerCase(), spr.toLowerCase().replace(/ö/g,"o").replace(/ü/g,"u").replace(/ä/g,"a")]});
+// });
+// const ART_COUNTRIES = [
+//   ["die Schweiz",["deutsch","französisch","italienisch"]],
+//   ["die Türkei",["türkisch"]],
+//   ["die USA",["englisch"]],
+//   ["die Niederlande",["niederländisch","niederlandisch"]]
+// ];
+// ART_COUNTRIES.forEach(([land,accepts])=>{
+//   QUESTIONS.push({cat:"الدول واللغات", type:"fill", q:`إيه اللغة الرسمية في ${land}؟ (اكتب لغة واحدة تكفي)`, accept:accepts});
+// });
+// const REVERSE_LANG = [
+//   ["Japanisch","Japan"],["Russisch","Russland"],["Polnisch","Polen"],["Türkisch","die Türkei"],
+//   ["Chinesisch","China"],["Griechisch","Griechenland"],["Schwedisch","Schweden"],["Niederländisch","die Niederlande"]
+// ];
+// REVERSE_LANG.forEach(([spr,land])=>{
+//   QUESTIONS.push({cat:"الدول واللغات", type:"fill", q:`أي دولة اللغة الرسمية فيها هي ${spr}؟`, accept:[land.toLowerCase(), land.replace("die ","").toLowerCase()]});
+// });
+// QUESTIONS.push(
+//   {cat:"الدول واللغات", type:"mcq", q:'"aus ___ Schweiz" — كمّل بالأداة الصح:', options:["(من غير أداة)","der","die","das"], answer:1},
+//   {cat:"الدول واللغات", type:"mcq", q:'"aus ___ USA" — كمّل بالأداة الصح:', options:["(من غير أداة)","der","den","die"], answer:2},
+//   {cat:"الدول واللغات", type:"mcq", q:'"aus ___ Türkei" — كمّل بالأداة الصح:', options:["(من غير أداة)","der","die","das"], answer:1},
+//   {cat:"الدول واللغات", type:"mcq", q:'"aus Spanien" — محتاجة أداة تعريف؟', options:["أيوه","لأ"], answer:1},
+//   {cat:"الدول واللغات", type:"mcq", q:'"aus Kuwait" — محتاجة أداة تعريف؟', options:["أيوه","لأ"], answer:1}
+// );
 
 /* ---------- 5) تحية / وداع / درجة الرسمية ---------- */
 QUESTIONS.push(
