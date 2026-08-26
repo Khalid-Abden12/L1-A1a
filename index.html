@@ -23,7 +23,195 @@
     --rust-bg:#FBEAE7;
     --line:#E4D9C5;
     --radius:14px;
-  }
+  }/* =========================
+   Page Animation
+========================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    animation: pageLoad 0.8s ease-in-out;
+}
+
+/* حركة دخول الصفحة */
+@keyframes pageLoad {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================
+   كل العناصر
+========================= */
+
+.container,
+.row,
+.card,
+.form-control,
+.btn,
+input,
+textarea,
+select,
+img,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    transition: all 0.35s ease;
+}
+
+
+/* =========================
+   Cards
+========================= */
+
+.card {
+    animation: cardShow 0.7s ease both;
+}
+
+@keyframes cardShow {
+    from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+
+/* =========================
+   Images
+========================= */
+
+.card img {
+    transition: transform 0.5s ease;
+}
+
+.card:hover img {
+    transform: scale(1.05);
+}
+
+
+/* =========================
+   Buttons
+========================= */
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-3px);
+}
+
+.btn:active {
+    transform: scale(0.95);
+}
+
+
+/* =========================
+   Inputs
+========================= */
+
+.form-control {
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(0, 123, 255, 0.15);
+}
+
+
+/* =========================
+   Hover على العناصر
+========================= */
+
+input:hover,
+textarea:hover,
+select:hover {
+    transform: translateY(-1px);
+}
+
+
+/* =========================
+   ظهور المنتجات واحد وراء الثاني
+========================= */
+
+.card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.card:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.card:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
+
+/* =========================
+   تحسين شكل الصفحة
+========================= */
+
+body {
+    overflow-x: hidden;
+}
+
+::selection {
+    background: #0d6efd;
+    color: white;
+}
+
+
+/* =========================
+   عند الضغط على أي زر
+========================= */
+
+button {
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(0.96);
+}
   *{box-sizing:border-box;}
   body{
     margin:0;
@@ -187,7 +375,7 @@
 </main>
 
 <footer>مصمم خصيصًا لمراجعة الدرس الأول من كتاب Netzwerk A1 — بالتوفيق! 🇩🇪</footer>
-<footer>created by khalid mo</footer>
+<footer>created by Khalid Abden</footer>
 
 <script>
 /* =========================================================
